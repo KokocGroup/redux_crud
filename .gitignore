@@ -130,3 +130,4 @@ ENV/
 .ropeproject
 
 /db.sqlite3
+/static/bundle.js.map
