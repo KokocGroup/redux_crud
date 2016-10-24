@@ -2,17 +2,16 @@ import React, {Component} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import User from '../components/User'
-import Page from '../components/Page'
-import * as pageActions from '../actions/PageActions'
+import Task from '../components/Task'
+import * as taskActions from '../actions/TaskActions'
 
 class App extends Component {
     render() {
-        const {user, page} = this.props;
-        const {setYear} = this.props.pageActions;
+        const {user, task} = this.props;
 
         return <div>
             <User name={user.name}/>
-            <Page photos={page.photos} year={page.year} setYear={setYear}/>
+            <Task task={task}/>
         </div>
     }
 }
@@ -20,13 +19,13 @@ class App extends Component {
 function mapStateToProps(state) {
     return {
         user: state.user,
-        page: state.page
+        task: state.task
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        pageActions: bindActionCreators(pageActions, dispatch)
+        taskActions: bindActionCreators(taskActions, dispatch)
     }
 }
 

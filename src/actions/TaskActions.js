@@ -1,4 +1,4 @@
-import {SET_YEAR} from '../constants/Page'
+import {SET_YEAR} from '../constants/Task'
 
 export function setYear(year) {
 
