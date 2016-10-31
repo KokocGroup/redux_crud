@@ -3,11 +3,11 @@ from django.contrib.auth.models import AbstractUser
 
 
 class Task(models.Model):
-    title = models.CharField('Название', max_length=256)
-    description = models.TextField('Описание')
+    text = models.CharField('Название', max_length=256)
+    complete = models.BooleanField('Завершена', default=False)
 
     def __str__(self):
-        return self.title
+        return self.text
 
     class Meta:
         db_table = 'task'

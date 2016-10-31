@@ -1,25 +1,25 @@
 import React, {Component} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import User from '../components/User'
 import Task from '../components/Task'
+import TaskForm from '../components/TaskForm'
 import * as taskActions from '../actions/TaskActions'
 
 class App extends Component {
     render() {
-        const {user, task} = this.props;
+        const {results, filterComplete} = this.props.tasks;
+        const {addTask, completeTask, deleteTask, filterTask, getTasks} = this.props.taskActions;
 
         return <div>
-            <User name={user.name}/>
-            <Task task={task}/>
+            <TaskForm addTask={addTask} filterComplete={filterComplete} filterTask={filterTask} getTasks={getTasks}/>
+            <Task tasks={results} filterComplete={filterComplete}  completeTask={completeTask} deleteTask={deleteTask}/>
         </div>
     }
 }
 
 function mapStateToProps(state) {
     return {
-        user: state.user,
-        task: state.task
+        tasks: state.tasks
     }
 }
 
