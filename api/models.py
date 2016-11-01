@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 class Task(models.Model):
     title = models.CharField('Название', max_length=256)
-    description = models.TextField('Описание', null=True, blank=True)
+    description = models.TextField('Описание', blank=True, default='')
     complete = models.BooleanField('Завершена', default=False)
     user = models.ForeignKey('User', verbose_name='Пользователь', null=True)
 

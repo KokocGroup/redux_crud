@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Table} from 'react-bootstrap'
+import {Table, Button, Checkbox} from 'react-bootstrap'
 
 export default class TaskList extends Component {
     onComplete(task, e) {
@@ -17,32 +17,25 @@ export default class TaskList extends Component {
         const styleLineThrough = {textDecoration: 'line-through'};
 
         return <Table striped bordered condensed hover>
-    <thead>
-      <tr>
-          <th>#</th>
-        <th>Заголовок</th>
-        <th>Описание</th>
-        <th>Действие</th>
-      </tr>
-    </thead>
-    <tbody>
-        {
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Заголовок</th>
+                <th>Описание</th>
+                <th>Действие</th>
+            </tr>
+            </thead>
+            <tbody>
+            {
                 tasks.map((el) => <tr key={el.pk}>
-                    <td>{el.complete}</td>
-                    <td><a href='#complete' style={el.complete ? styleLineThrough : null} onClick={this.onComplete.bind(this, el)}>{el.title}</a></td>
-                    <td>{el.description}</td>
-                    <td><a href='#delete' style={{fontSize: 'smaller', color: 'red', marginLeft: '5px'}} onClick={this.onDelete.bind(this, el)}>Удалить</a></td>
+                    <td><Checkbox checked={el.complete} onChange={this.onComplete.bind(this, el)}/></td>
+                    <td style={el.complete ? styleLineThrough : null}>{el.title}</td>
+                    <td>{el.description ? el.description : ''}</td>
+                    <td><Button bsStyle='danger' bsSize='xsmall' onClick={this.onDelete.bind(this, el)}>Удалить</Button></td>
                 </tr>)
             }
-    </tbody>
-  </Table>
-
-
-
-
-
-
-
+            </tbody>
+        </Table>
 
 
     }
