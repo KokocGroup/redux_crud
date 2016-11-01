@@ -12,4 +12,4 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Task
-        fields = ('url', 'pk', 'text', 'complete')
+        fields = ('url', 'pk', 'title', 'description', 'complete')

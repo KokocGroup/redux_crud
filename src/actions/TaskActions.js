@@ -2,9 +2,9 @@ import {
     ADD_TASK_REQUEST,
     ADD_TASK_SUCCESS,
     ADD_TASK_FAIL,
-    COMPLETE_TASK_REQUEST,
-    COMPLETE_TASK_SUCCESS,
-    COMPLETE_TASK_FAIL,
+    UPDATE_TASK_REQUEST,
+    UPDATE_TASK_SUCCESS,
+    UPDATE_TASK_FAIL,
     FILTER_COMPLETE_TASK,
     DELETE_TASK_REQUEST,
     DELETE_TASK_SUCCESS,
@@ -13,34 +13,42 @@ import {
     GET_TASKS_SUCCESS,
     GET_TASKS_FAIL
 } from '../constants/Task'
+import {tasks} from '../rest-api'
 
-export function addTask(text) {
+export function addTask(title, description) {
 
     return (dispatch) => {
+
         dispatch({
             type: ADD_TASK_REQUEST
         });
 
-        let data = new FormData();
-        data.append('text', text);
-
-        fetch('/api/tasks/', {
-            method: 'POST',
-            credentials: 'same-origin',
-            body: data
-        }).then((res) => {
-            if (res.ok) {
-                return res.json();
-            } else {
-                return this.reject(res.statusText);
-            }
-        }).then((data) => {
+        tasks.add({title: title, description: description}).then((data) => {
             dispatch({
                 type: ADD_TASK_SUCCESS,
                 data: data
             })
-        }).catch(() => {
-            dispatch({type: ADD_TASK_FAIL});
+        }).catch((err) => {
+            dispatch({type: ADD_TASK_FAIL, error: err.message});
+        });
+    }
+
+}
+
+export function updateTask(task, data) {
+
+    return (dispatch) => {
+        dispatch({
+            type: UPDATE_TASK_REQUEST
+        });
+
+        tasks.update(task.pk, data).then((data) => {
+            dispatch({
+                type: UPDATE_TASK_SUCCESS,
+                data: data
+            })
+        }).catch((err) => {
+            dispatch({type: UPDATE_TASK_FAIL, error: err.message})
         });
     }
 
@@ -50,25 +58,16 @@ export function completeTask(task) {
 
     return (dispatch) => {
         dispatch({
-            type: COMPLETE_TASK_REQUEST
+            type: UPDATE_TASK_REQUEST
         });
 
-        let data = new FormData();
-        data.append('complete', !task.complete);
-
-        fetch(`/api/tasks/${task.pk}/`, {
-            method: 'PATCH',
-            credentials: 'same-origin',
-            body: data
-        }).then((res) => {
-            return res.json();
-        }).then((data) => {
+        tasks.update(task.pk, {complete: !task.complete}).then((data) => {
             dispatch({
-                type: COMPLETE_TASK_SUCCESS,
+                type: UPDATE_TASK_SUCCESS,
                 data: data
             })
-        }).catch(() => {
-            dispatch({type: COMPLETE_TASK_FAIL})
+        }).catch((err) => {
+            dispatch({type: UPDATE_TASK_FAIL, error: err.message})
         });
     }
 
@@ -89,17 +88,13 @@ export function deleteTask(task) {
             type: DELETE_TASK_REQUEST
         });
 
-        fetch(`/api/tasks/${task.pk}/`, {method: 'DELETE', credentials: 'same-origin'}).then((res) => {
-            if (res.ok) {
-                dispatch({
-                    type: DELETE_TASK_SUCCESS,
-                    pk: task.pk
-                })
-            } else {
-                dispatch({type: DELETE_TASK_FAIL})
-            }
-        }).catch(() => {
-            dispatch({type: DELETE_TASK_FAIL})
+        tasks.del(task.pk).then(() => {
+            dispatch({
+                type: DELETE_TASK_SUCCESS,
+                pk: task.pk
+            })
+        }).catch((err) => {
+            dispatch({type: DELETE_TASK_FAIL, error: err.message})
         });
     }
 
@@ -112,15 +107,13 @@ export function getTasks() {
             type: GET_TASKS_REQUEST
         });
 
-        fetch('/api/tasks/', {credentials: 'same-origin'}).then((res) => {
-            return res.json();
-        }).then((data) => {
+        tasks.all().then((data) => {
             dispatch({
                 type: GET_TASKS_SUCCESS,
                 data: data
             })
-        }).catch(() => {
-            dispatch({type: GET_TASKS_FAIL})
+        }).catch((err) => {
+            dispatch({type: GET_TASKS_FAIL, error: err.message})
         });
     }
 
