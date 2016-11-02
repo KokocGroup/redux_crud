@@ -11,7 +11,7 @@ class App extends Component {
         this.props.taskActions.getTasks(this.props.query);
     }
 
-    componentWillUpdate(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (this.props.query != nextProps.query) {
             this.props.taskActions.getTasks(nextProps.query);
         }
