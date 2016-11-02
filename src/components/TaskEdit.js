@@ -9,7 +9,11 @@ import {browserHistory} from 'react-router'
 class TaskEdit extends Component {
 
     onCloseModal() {
-        browserHistory.push('/')
+        let {query} = this.props;
+        browserHistory.push({
+            pathname: '/',
+            query
+        })
     }
 
     onSave(e) {
@@ -18,17 +22,21 @@ class TaskEdit extends Component {
             title: ReactDOM.findDOMNode(this.refs.titleInput).value,
             description: ReactDOM.findDOMNode(this.refs.descriptionInput).value,
         };
-        this.props.taskActions.updateTask(this.props.task, data);
-        browserHistory.push('/')
+        if (this.props.task) {
+            this.props.taskActions.updateTask(this.props.task, data)
+        } else {
+            this.props.taskActions.addTask(data)
+        }
+
+        let {query} = this.props;
+        browserHistory.push({
+            pathname: '/',
+            query
+        })
     }
 
     render() {
         const {task} = this.props;
-        if (!task) {
-            return <div>
-                Загрузка данных
-            </div>
-        }
 
         return <Modal show={true} onHide={::this.onCloseModal} bsSize='large'>
             <Form horizontal onSubmit={::this.onSave}>
@@ -41,7 +49,7 @@ class TaskEdit extends Component {
                             Название:
                         </Col>
                         <Col sm={9}>
-                            <FormControl type='text' placeholder='Название' defaultValue={task.title} ref='titleInput'/>
+                            <FormControl type='text' placeholder='Название' defaultValue={!task || task.title == 'undefined' ? '' : task.title} ref='titleInput'/>
                         </Col>
                     </FormGroup>
                     <FormGroup>
@@ -52,7 +60,7 @@ class TaskEdit extends Component {
                             <FormControl componentClass='textarea'
                                          rows='3'
                                          placeholder='Описание'
-                                         defaultValue={task.description == 'undefined' ? '' : task.description}
+                                         defaultValue={!task || task.description == 'undefined' ? '' : task.description}
                                          ref='descriptionInput'
                             />
                         </Col>
@@ -71,6 +79,7 @@ class TaskEdit extends Component {
 function mapStateToProps(state, ownProps) {
     return {
         task: state.tasks.results.filter((el) => el.pk == ownProps.params.task_pk)[0],
+        query: ownProps.location.query
     }
 }
 

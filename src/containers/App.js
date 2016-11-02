@@ -1,20 +1,33 @@
 import React, {Component} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {Navbar, NavItem, MenuItem, NavDropdown, Nav} from 'react-bootstrap'
+import {Navbar, NavItem, MenuItem, NavDropdown, Nav, Pagination} from 'react-bootstrap'
 import TaskList from '../components/TaskList'
-import AddTask from '../components/AddTask'
+import {browserHistory} from 'react-router'
 import * as taskActions from '../actions/TaskActions'
 
 class App extends Component {
     componentDidMount() {
-        this.props.taskActions.getTasks();
+        this.props.taskActions.getTasks(this.props.query);
+    }
+
+    componentWillUpdate(nextProps) {
+        if (this.props.query != nextProps.query) {
+            this.props.taskActions.getTasks(nextProps.query);
+        }
+    }
+
+    onPageSelect(eventKey) {
+        let query = {...this.props.query, page: eventKey};
+        browserHistory.push({
+            pathname: '/',
+            query
+        })
     }
 
     render() {
-        const {tasks, filterComplete} = this.props;
-        const {addTask, completeTask, deleteTask, filterTask} = this.props.taskActions;
-
+        const {tasks, query, countPage, currentPage} = this.props;
+        const {completeTask, deleteTask} = this.props.taskActions;
         return <div>
             <Navbar fixedTop inverse>
                 <Navbar.Header>
@@ -35,19 +48,29 @@ class App extends Component {
                 </Nav>
             </Navbar>
             <div className='container theme-showcase' role='main'>
-                <AddTask addTask={addTask} filterComplete={filterComplete} filterTask={filterTask}/>
-                <TaskList tasks={tasks} completeTask={completeTask} deleteTask={deleteTask}/>
+                <TaskList tasks={tasks} completeTask={completeTask} deleteTask={deleteTask} query={query}/>
+                <Pagination
+                    boundaryLinks
+                    bsSize='small'
+                    items={countPage}
+                    maxButtons={5}
+                    activePage={currentPage}
+                    onSelect={::this.onPageSelect}
+                />
+
                 {this.props.children}
             </div>
         </div>
     }
 }
 
-function mapStateToProps(state) {
-    const {results, filterComplete} = state.tasks;
+function mapStateToProps(state, ownProps) {
+    const {results, current, count} = state.tasks;
     return {
-        filterComplete: filterComplete,
-        tasks: !filterComplete ? results : results.filter((el) => !el.complete),
+        tasks: results,
+        currentPage: current,
+        countPage: count,
+        query: ownProps.location.query
     }
 }
 

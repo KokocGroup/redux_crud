@@ -66,7 +66,7 @@ export default function tasks(state = initialState, action) {
             return {...state, fetching: true, error: ''};
 
         case GET_TASKS_SUCCESS:
-            return {...state, results: action.data.results, fetching: false, error: ''};
+            return {...state, ...action.data, fetching: false, error: ''};
 
         case GET_TASKS_FAIL:
             return {...state, error: action.error, fetching: false};

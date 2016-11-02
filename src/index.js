@@ -16,6 +16,7 @@ render(
     <Provider store={store}>
         <Router history={history}>
             <Route path='/' component={App}>
+                <Route path='new/' component={TaskEdit}/>
                 <Route path='edit/:task_pk/' component={TaskEdit}/>
             </Route>
         </Router>

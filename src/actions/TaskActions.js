@@ -15,7 +15,7 @@ import {
 } from '../constants/Task'
 import {tasks} from '../rest-api'
 
-export function addTask(title, description) {
+export function addTask(data) {
 
     return (dispatch) => {
 
@@ -23,7 +23,7 @@ export function addTask(title, description) {
             type: ADD_TASK_REQUEST
         });
 
-        tasks.add({title: title, description: description}).then((data) => {
+        tasks.add(data).then((data) => {
             dispatch({
                 type: ADD_TASK_SUCCESS,
                 data: data
@@ -49,6 +49,25 @@ export function updateTask(task, data) {
             })
         }).catch((err) => {
             dispatch({type: UPDATE_TASK_FAIL, error: err.message})
+        });
+    }
+
+}
+
+export function getTasks(query) {
+
+    return (dispatch) => {
+        dispatch({
+            type: GET_TASKS_REQUEST
+        });
+
+        tasks.all(query).then((data) => {
+            dispatch({
+                type: GET_TASKS_SUCCESS,
+                data: data
+            })
+        }).catch((err) => {
+            dispatch({type: GET_TASKS_FAIL, error: err.message})
         });
     }
 
@@ -82,25 +101,6 @@ export function deleteTask(task) {
             })
         }).catch((err) => {
             dispatch({type: DELETE_TASK_FAIL, error: err.message})
-        });
-    }
-
-}
-
-export function getTasks() {
-
-    return (dispatch) => {
-        dispatch({
-            type: GET_TASKS_REQUEST
-        });
-
-        tasks.all().then((data) => {
-            dispatch({
-                type: GET_TASKS_SUCCESS,
-                data: data
-            })
-        }).catch((err) => {
-            dispatch({type: GET_TASKS_FAIL, error: err.message})
         });
     }
 

@@ -129,5 +129,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_PAGINATION_CLASS': 'api.paginators.CustomPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 5
 }

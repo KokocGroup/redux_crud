@@ -15,8 +15,15 @@ class Resource {
         this.url = url;
     }
 
-    all() {
-        return fetch(this.url, {credentials: 'same-origin'}).then((res) => {
+    all(query) {
+        const params = Object.keys(query).map(
+            (key) => encodeURIComponent(key) + '=' + encodeURIComponent(query[key])
+        ).join('&').replace(/%20/g, '+');
+
+        const url = this.url +(params ? `?${params}` : '');
+        return fetch(url, {
+            credentials: 'same-origin',
+        }).then((res) => {
             if (res.ok) {
                 return res.json();
             } else {
