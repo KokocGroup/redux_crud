@@ -23,5 +23,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(router.urls)),
     url(r'^api/', include('rest_framework.urls')),
-    url(r'^$', TemplateView.as_view(template_name='index.html')),
+    url(r'^.*$', TemplateView.as_view(template_name='index.html')),
 ]

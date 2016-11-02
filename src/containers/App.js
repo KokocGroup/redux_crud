@@ -37,6 +37,7 @@ class App extends Component {
             <div className='container theme-showcase' role='main'>
                 <AddTask addTask={addTask} filterComplete={filterComplete} filterTask={filterTask}/>
                 <TaskList tasks={tasks} completeTask={completeTask} deleteTask={deleteTask}/>
+                {this.props.children}
             </div>
         </div>
     }
@@ -46,7 +47,7 @@ function mapStateToProps(state) {
     const {results, filterComplete} = state.tasks;
     return {
         filterComplete: filterComplete,
-        tasks: !filterComplete ? results : results.filter((el) => !el.complete)
+        tasks: !filterComplete ? results : results.filter((el) => !el.complete),
     }
 }
 

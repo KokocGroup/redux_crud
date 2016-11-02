@@ -56,20 +56,7 @@ export function updateTask(task, data) {
 
 export function completeTask(task) {
 
-    return (dispatch) => {
-        dispatch({
-            type: UPDATE_TASK_REQUEST
-        });
-
-        tasks.update(task.pk, {complete: !task.complete}).then((data) => {
-            dispatch({
-                type: UPDATE_TASK_SUCCESS,
-                data: data
-            })
-        }).catch((err) => {
-            dispatch({type: UPDATE_TASK_FAIL, error: err.message})
-        });
-    }
+    return updateTask(task, {complete: !task.complete});
 
 }
 

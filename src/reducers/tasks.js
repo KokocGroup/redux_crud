@@ -48,11 +48,11 @@ export default function tasks(state = initialState, action) {
 
         case UPDATE_TASK_SUCCESS: {
             const tasks = state.results.slice();
-            for (let t of tasks) {
+            tasks.forEach((t, i) => {
                 if (t.pk == action.data.pk) {
-                    t.complete = action.data.complete
+                    tasks[i] = action.data
                 }
-            }
+            });
             return {...state, results: tasks};
         }
 
