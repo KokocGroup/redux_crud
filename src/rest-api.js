@@ -10,6 +10,32 @@ function getCookie(cookieName) {
 
 const headers = {'x-csrftoken': getCookie('csrftoken')};
 
+function myFetchWrapper(url, method = 'GET', body) {
+    return fetch(url, {
+        method,
+        body,
+        headers,
+        credentials: 'same-origin',
+    }).then(response => {
+        if (method == 'DELETE') {
+            if (response.ok) {
+                return response
+            } else {
+                throw new Error('Ошибка');
+            }
+        } else {
+            return response.json().then(json => {
+                if (response.ok) {
+                    return json
+                } else {
+                    throw new Error(Object.keys(json).map((key) => `${key}: ${json[key][0]}`).join('\n'));
+                }
+            })
+        }
+
+    });
+}
+
 class Resource {
     constructor(url) {
         this.url = url;
@@ -20,16 +46,8 @@ class Resource {
             (key) => encodeURIComponent(key) + '=' + encodeURIComponent(query[key])
         ).join('&').replace(/%20/g, '+');
 
-        const url = this.url +(params ? `?${params}` : '');
-        return fetch(url, {
-            credentials: 'same-origin',
-        }).then((res) => {
-            if (res.ok) {
-                return res.json();
-            } else {
-                throw new Error(res.statusText)
-            }
-        })
+        const url = this.url + (params ? `?${params}` : '');
+        return myFetchWrapper(url)
     }
 
     add(data) {
@@ -40,32 +58,12 @@ class Resource {
                 body.append(key, data[key]);
         }
 
-        return fetch(this.url, {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: headers,
-            body: body
-        }).then((res) => {
-            if (res.ok) {
-                return res.json();
-            } else {
-                throw new Error(res.statusText)
-            }
-        })
+        return myFetchWrapper(this.url, 'POST', body)
     }
 
+
     del(pk) {
-        return fetch(`${this.url}${pk}/`, {
-            method: 'DELETE',
-            credentials: 'same-origin',
-            headers: headers
-        }).then((res) => {
-            if (res.ok) {
-                return res
-            } else {
-                throw new Error(res.statusText)
-            }
-        })
+        return myFetchWrapper(`${this.url}${pk}/`, 'DELETE')
     }
 
     update(pk, data) {
@@ -76,18 +74,7 @@ class Resource {
                 body.append(key, data[key]);
         }
 
-        return fetch(`${this.url}${pk}/`, {
-            method: 'PATCH',
-            credentials: 'same-origin',
-            headers: headers,
-            body: body
-        }).then((res) => {
-            if (res.ok) {
-                return res.json()
-            } else {
-                throw new Error(res.statusText)
-            }
-        })
+        return myFetchWrapper(`${this.url}${pk}/`, 'PATCH', body)
     }
 }
 

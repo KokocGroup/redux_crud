@@ -7,6 +7,7 @@ import TaskEdit from './components/TaskEdit'
 import configureStore from './store/configureStore'
 import {Router, Route, browserHistory} from 'react-router'
 import {syncHistoryWithStore} from 'react-router-redux'
+import 'sweetalert/dist/sweetalert.css';
 import './app.css'
 
 const store = configureStore();

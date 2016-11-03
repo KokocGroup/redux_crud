@@ -8,7 +8,7 @@ export default class TaskList extends Component {
     }
 
     onDelete(task) {
-        this.props.deleteTask(task);
+        this.props.taskDeleteAlert(task);
     }
 
     onEdit(task) {

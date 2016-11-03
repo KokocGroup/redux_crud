@@ -3,6 +3,8 @@ import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {Navbar, NavItem, MenuItem, NavDropdown, Nav, Pagination} from 'react-bootstrap'
 import TaskList from '../components/TaskList'
+import TaskAlert from '../components/TaskAlert'
+import TaskDeleteAlert from '../components/TaskDeleteAlert'
 import {browserHistory} from 'react-router'
 import * as taskActions from '../actions/TaskActions'
 
@@ -12,13 +14,16 @@ class App extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.query != nextProps.query) {
+        if (this.props.query.page != nextProps.query.page) {
             this.props.taskActions.getTasks(nextProps.query);
         }
     }
 
     onPageSelect(eventKey) {
         let query = {...this.props.query, page: eventKey};
+        if (eventKey == 1) {
+            delete query['page']
+        }
         browserHistory.push({
             pathname: '/',
             query
@@ -26,8 +31,8 @@ class App extends Component {
     }
 
     render() {
-        const {tasks, query, countPage, currentPage} = this.props;
-        const {completeTask, deleteTask} = this.props.taskActions;
+        const {tasks, query, countPage, currentPage, error, deleteTaskAlert} = this.props;
+        const {completeTask, deleteTask, taskErrorDismiss, taskDeleteAlert, taskDeleteDismiss} = this.props.taskActions;
         return <div>
             <Navbar fixedTop inverse>
                 <Navbar.Header>
@@ -48,7 +53,9 @@ class App extends Component {
                 </Nav>
             </Navbar>
             <div className='container theme-showcase' role='main'>
-                <TaskList tasks={tasks} completeTask={completeTask} deleteTask={deleteTask} query={query}/>
+                <TaskAlert error={error} taskErrorDismiss={taskErrorDismiss} />
+                <TaskDeleteAlert task={deleteTaskAlert} taskDeleteDismiss={taskDeleteDismiss} deleteTask={deleteTask}/>
+                <TaskList tasks={tasks} completeTask={completeTask} taskDeleteAlert={taskDeleteAlert} query={query}/>
                 <Pagination
                     boundaryLinks
                     bsSize='small'
@@ -57,7 +64,6 @@ class App extends Component {
                     activePage={currentPage}
                     onSelect={::this.onPageSelect}
                 />
-
                 {this.props.children}
             </div>
         </div>
@@ -65,12 +71,15 @@ class App extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    const {results, current, count} = state.tasks;
+    const {results, current, count, error, deleteTaskAlert} = state.tasks;
+    const {query} = ownProps.location;
     return {
         tasks: results,
         currentPage: current,
         countPage: count,
-        query: ownProps.location.query
+        deleteTaskAlert,
+        error,
+        query
     }
 }
 

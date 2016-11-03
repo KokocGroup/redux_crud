@@ -11,7 +11,10 @@ import {
     DELETE_TASK_FAIL,
     GET_TASKS_SUCCESS,
     GET_TASKS_FAIL,
-    GET_TASKS_REQUEST
+    GET_TASKS_REQUEST,
+    TASK_ERROR_DISMISS,
+    TASK_DELETE_ALERT,
+    TASK_DELETE_DISMISS
 } from '../constants/Task'
 
 const initialState = {
@@ -20,7 +23,8 @@ const initialState = {
     current: 1,
     results: [],
     fetching: false,
-    error: ''
+    error: '',
+    deleteTaskAlert: null
 };
 
 export default function tasks(state = initialState, action) {
@@ -70,6 +74,15 @@ export default function tasks(state = initialState, action) {
 
         case GET_TASKS_FAIL:
             return {...state, error: action.error, fetching: false};
+
+        case TASK_ERROR_DISMISS:
+            return {...state, error: ''};
+
+        case TASK_DELETE_ALERT:
+            return {...state, deleteTaskAlert: action.task};
+
+        case TASK_DELETE_DISMISS:
+            return {...state, deleteTaskAlert: null};
 
         default:
             return state;

@@ -11,7 +11,10 @@ import {
     DELETE_TASK_FAIL,
     GET_TASKS_REQUEST,
     GET_TASKS_SUCCESS,
-    GET_TASKS_FAIL
+    GET_TASKS_FAIL,
+    TASK_ERROR_DISMISS,
+    TASK_DELETE_ALERT,
+    TASK_DELETE_DISMISS
 } from '../constants/Task'
 import {tasks} from '../rest-api'
 
@@ -29,7 +32,7 @@ export function addTask(data) {
                 data: data
             })
         }).catch((err) => {
-            dispatch({type: ADD_TASK_FAIL, error: err.message});
+            dispatch({type: ADD_TASK_FAIL, error: err.message})
         });
     }
 
@@ -102,6 +105,31 @@ export function deleteTask(task) {
         }).catch((err) => {
             dispatch({type: DELETE_TASK_FAIL, error: err.message})
         });
+    }
+
+}
+
+export function taskErrorDismiss() {
+
+    return {
+        type: TASK_ERROR_DISMISS
+    }
+
+}
+
+export function taskDeleteAlert(task) {
+
+    return {
+        type: TASK_DELETE_ALERT,
+        task: task
+    }
+
+}
+
+export function taskDeleteDismiss() {
+
+    return {
+        type: TASK_DELETE_DISMISS
     }
 
 }
