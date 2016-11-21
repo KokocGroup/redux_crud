@@ -27203,12 +27203,45 @@
 	    return '';
 	}
 	
-	var headers = { 'x-csrftoken': getCookie('csrftoken') };
+	function get_body(data) {
+	    if (typeof data == 'undefined') {
+	        return data;
+	    }
+	    var body = new FormData();
+	    var _iteratorNormalCompletion2 = true;
+	    var _didIteratorError2 = false;
+	    var _iteratorError2 = undefined;
+	
+	    try {
+	        for (var _iterator2 = Object.keys(data)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	            var key = _step2.value;
+	
+	            body.append(key, data[key]);
+	        }
+	    } catch (err) {
+	        _didIteratorError2 = true;
+	        _iteratorError2 = err;
+	    } finally {
+	        try {
+	            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                _iterator2.return();
+	            }
+	        } finally {
+	            if (_didIteratorError2) {
+	                throw _iteratorError2;
+	            }
+	        }
+	    }
+	
+	    return body;
+	}
 	
 	function myFetchWrapper(url) {
 	    var method = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'GET';
-	    var body = arguments[2];
+	    var data = arguments[2];
 	
+	    var body = get_body(data);
+	    var headers = { 'x-csrftoken': getCookie('csrftoken') };
 	    return fetch(url, {
 	        method: method,
 	        body: body,
@@ -27255,13 +27288,7 @@
 	    }, {
 	        key: 'add',
 	        value: function add(data) {
-	            var body = new FormData();
-	
-	            for (var key in data) {
-	                if (data.hasOwnProperty(key)) body.append(key, data[key]);
-	            }
-	
-	            return myFetchWrapper(this.url, 'POST', body);
+	            return myFetchWrapper(this.url, 'POST', data);
 	        }
 	    }, {
 	        key: 'del',
@@ -27271,13 +27298,7 @@
 	    }, {
 	        key: 'update',
 	        value: function update(pk, data) {
-	            var body = new FormData();
-	
-	            for (var key in data) {
-	                if (data.hasOwnProperty(key)) body.append(key, data[key]);
-	            }
-	
-	            return myFetchWrapper('' + this.url + pk + '/', 'PATCH', body);
+	            return myFetchWrapper('' + this.url + pk + '/', 'PATCH', data);
 	        }
 	    }]);
 	

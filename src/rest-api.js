@@ -8,9 +8,20 @@ function getCookie(cookieName) {
     return '';
 }
 
-const headers = {'x-csrftoken': getCookie('csrftoken')};
+function get_body(data) {
+    if (typeof data == 'undefined') {
+        return data
+    }
+    let body = new FormData();
+    for (let key of Object.keys(data)) {
+        body.append(key, data[key]);
+    }
+    return body
+}
 
-function myFetchWrapper(url, method = 'GET', body) {
+function myFetchWrapper(url, method = 'GET', data) {
+    const body = get_body(data);
+    const headers = {'x-csrftoken': getCookie('csrftoken')};
     return fetch(url, {
         method,
         body,
@@ -51,14 +62,7 @@ class Resource {
     }
 
     add(data) {
-        let body = new FormData();
-
-        for (let key in data) {
-            if (data.hasOwnProperty(key))
-                body.append(key, data[key]);
-        }
-
-        return myFetchWrapper(this.url, 'POST', body)
+        return myFetchWrapper(this.url, 'POST', data)
     }
 
 
@@ -67,14 +71,7 @@ class Resource {
     }
 
     update(pk, data) {
-        let body = new FormData();
-
-        for (let key in data) {
-            if (data.hasOwnProperty(key))
-                body.append(key, data[key]);
-        }
-
-        return myFetchWrapper(`${this.url}${pk}/`, 'PATCH', body)
+        return myFetchWrapper(`${this.url}${pk}/`, 'PATCH', data)
     }
 }
 
